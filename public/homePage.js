@@ -46,3 +46,46 @@ moneyManager.conversionMoneyCallback = function (data) {
     }
   });
 };
+
+moneyManager.sendMoneyCallback = function (data) {
+  ApiConnector.transferMoney(data, (callback) => {
+    if (callback.success) {
+      ProfileWidget.showProfile(callback.data);
+    } else {
+      moneyManager.setMessage(callback.success, callback.error);
+    }
+  });
+};
+
+const favoritesWidget = new FavoritesWidget();
+ApiConnector.getFavorites((callback) => {
+  if (callback.success) {
+    favoritesWidget.clearTable();
+    favoritesWidget.fillTable(callback.data);
+    favoritesWidget.updateUsersList(callback.data);
+  }
+});
+
+favoritesWidget.addUserCallback = function (data) {
+  ApiConnector.addUserToFavorites(data, (callback) => {
+    if (callback.success) {
+      favoritesWidget.clearTable();
+      favoritesWidget.fillTable(callback.data);
+      favoritesWidget.updateUsersList(callback.data);
+    } else {
+      favoritesWidget.setMessage(callback.success, callback.error);
+    }
+  });
+};
+
+favoritesWidget.removeUserCallback=function(data){
+  ApiConnector.removeUserFromFavorites(data, (callback) => {
+    if (callback.success) {
+      favoritesWidget.clearTable();
+      favoritesWidget.fillTable(callback.data);
+      favoritesWidget.updateUsersList(callback.data);
+    } else {
+      favoritesWidget.setMessage(callback.success, callback.error);
+    }
+  });
+}
